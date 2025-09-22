@@ -21,7 +21,7 @@ enum TransactionType {
 
 model User {
   id       Int      @id @default(autoincrement())
-  username String   @unique
+  fullname String   @unique
   email   String   @unique
   password String
   transactions Transaction[]
@@ -43,6 +43,7 @@ model Transaction {
   amount      Decimal  @db.Decimal(10, 2) 
   description String
   date        DateTime @db.Date
+  receipt     String?          // untuk simpan path/url bukti transaksi
 
   // Relasi ke User
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
