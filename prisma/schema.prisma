@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -14,18 +13,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Enum untuk membedakan jenis transaksi
+enum TransactionType {
+  EXPENSE 
+  INCOME  
+}
+
 model User {
   id       Int      @id @default(autoincrement())
   username String   @unique
+  email   String   @unique
   password String
   transactions Transaction[]
+  categories   Category[]
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+  transactions Transaction[]
+  @@unique([name, userId])
 }
 
 model Transaction {
   id          Int      @id @default(autoincrement())
-  amount      Float
-  description String?
-  date        DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id])
-  userId      Int
+  type        TransactionType // Menggunakan Enum untuk jenis transaksi
+  amount      Decimal  @db.Decimal(10, 2) 
+  description String
+  date        DateTime @db.Date
+
+  // Relasi ke User
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  // Relasi ke Category
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
 }

@@ -9,4 +9,5 @@ module.exports = {
   // Example:
   // createUser: async (data) => await prisma.user.create({ data }),
   // findUserByUsername: async (username) => await prisma.user.findUnique({ where: { username } }),
+  // getDataUser: async () => { await prisma.user.findMany() }
 };
