@@ -1,10 +1,10 @@
-// All user DB logic should use the Prisma client.
+// models/user.model.js
 import { prisma } from "../../core/config/db.js";
 
 export const findUserByEmail = async (email) =>
   await prisma.user.findUnique({ where: { email } });
 
- export const createUser = async (data) => {
+export const createUser = async (data) => {
   try {
     const user = await prisma.user.create({
       data: {
@@ -16,8 +16,7 @@ export const findUserByEmail = async (email) =>
         id: true,
         fullname: true,
         email: true,
-        createdAt: true,
-      }
+      },
     });
     return user;
   } catch (error) {
@@ -25,18 +24,30 @@ export const findUserByEmail = async (email) =>
   }
 };
 
- export const validatePassword = (password) => {
+export const validatePassword = (password) => {
   if (!password || password.length < 8) {
-    return { isValid: false, message: "Password must be at least 8 characters long" };
+    return {
+      isValid: false,
+      message: "Password must be at least 8 characters long",
+    };
   }
   if (!/(?=.*[a-z])/.test(password)) {
-    return { isValid: false, message: "Password must contain at least one lowercase letter" };
+    return {
+      isValid: false,
+      message: "Password must contain at least one lowercase letter",
+    };
   }
   if (!/(?=.*[A-Z])/.test(password)) {
-    return { isValid: false, message: "Password must contain at least one uppercase letter" };
+    return {
+      isValid: false,
+      message: "Password must contain at least one uppercase letter",
+    };
   }
   if (!/(?=.*\d)/.test(password)) {
-    return { isValid: false, message: "Password must contain at least one number" };
+    return {
+      isValid: false,
+      message: "Password must contain at least one number",
+    };
   }
   return { isValid: true };
 };
@@ -48,7 +59,8 @@ export const getAllUsers = async () => {
         id: true,
         fullname: true,
         email: true,
-      }
+   
+      },
     });
     return users;
   } catch (error) {

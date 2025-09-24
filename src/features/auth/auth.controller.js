@@ -1,7 +1,13 @@
+// controllers/auth.controller.js
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { findUserByEmail } from "./user.model.js";
-import { createUser, validatePassword, getAllUsers } from "./user.model.js";
+import validator from "validator"; // 🔥 ini wajib ditambahkan
+import {
+  findUserByEmail,
+  createUser,
+  validatePassword,
+  getAllUsers,
+} from "./user.model.js";
 
 export const register = async (req, res) => {
   try {
@@ -74,17 +80,16 @@ export const register = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Register error:", error); // 🔥 debug error asli di terminal
     if (error.code === "P2002") {
       return res
         .status(400)
         .json({ success: false, message: "Email already registered" });
     }
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error. Please try again later.",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error. Please try again later.",
+    });
   }
 };
 
@@ -93,12 +98,11 @@ export const getRegisteredUsers = async (req, res) => {
     const users = await getAllUsers();
     res.json({ success: true, users });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal server error. Please try again later.",
-      });
+    console.error("Get users error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error. Please try again later.",
+    });
   }
 };
 
@@ -125,8 +129,7 @@ export const login = async (req, res) => {
       },
     });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Server error occurred", error: err.message });
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Server error occurred", error: err.message });
   }
 };
