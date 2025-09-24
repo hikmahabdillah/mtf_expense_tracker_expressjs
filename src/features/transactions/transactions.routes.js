@@ -4,11 +4,13 @@ import {
   getTransactions,
   createTransaction,
   deleteTransaction,
+  getBalance,
 } from "./transactions.controller.js";
 
 const router = express.Router();
 
 router.get("/", getTransactions);
+router.get("/balance", getBalance);
 router.post("/", createTransaction);
 router.delete("/:id", deleteTransaction);
 
