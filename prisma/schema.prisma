@@ -25,16 +25,12 @@ model User {
   email   String   @unique
   password String
   transactions Transaction[]
-  categories   Category[]
 }
 
 model Category {
   id   Int    @id @default(autoincrement())
-  name String
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  name String @unique
   transactions Transaction[]
-  @@unique([name, userId])
 }
 
 model Transaction {

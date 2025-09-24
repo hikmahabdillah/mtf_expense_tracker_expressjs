@@ -36,22 +36,18 @@ export const register = async (req, res) => {
 
     const sanitizedEmail = validator.normalizeEmail(email.trim());
     if (!sanitizedEmail || !validator.isEmail(sanitizedEmail)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Please provide a valid email address",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid email address",
+      });
     }
 
     const sanitizedFullname = validator.escape(fullname.trim());
     if (sanitizedFullname.length < 2) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Full name must be at least 2 characters long",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Full name must be at least 2 characters long",
+      });
     }
 
     const existingUser = await findUserByEmail(sanitizedEmail);
@@ -130,6 +126,8 @@ export const login = async (req, res) => {
     });
   } catch (err) {
     console.error("Login error:", err);
-    res.status(500).json({ message: "Server error occurred", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Server error occurred", error: err.message });
   }
 };

@@ -1,6 +1,7 @@
 // models/user.model.js
 import { prisma } from "../../core/config/db.js";
 
+// get user data by email
 export const findUserByEmail = async (email) =>
   await prisma.user.findUnique({ where: { email } });
 
@@ -59,7 +60,6 @@ export const getAllUsers = async () => {
         id: true,
         fullname: true,
         email: true,
-   
       },
     });
     return users;
