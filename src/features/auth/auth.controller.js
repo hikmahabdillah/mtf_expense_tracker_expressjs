@@ -1,13 +1,8 @@
 // controllers/auth.controller.js
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 import validator from "validator"; // 🔥 ini wajib ditambahkan
-import {
-  findUserByEmail,
-  createUser,
-  validatePassword,
-  getAllUsers,
-} from "./user.model.js";
+import { findUserByEmail, createUser, validatePassword } from "./user.model.js";
 
 export const register = async (req, res) => {
   try {
@@ -89,34 +84,57 @@ export const register = async (req, res) => {
   }
 };
 
-export const getRegisteredUsers = async (req, res) => {
-  try {
-    const users = await getAllUsers();
-    res.json({ success: true, users });
-  } catch (error) {
-    console.error("Get users error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error. Please try again later.",
-    });
-  }
-};
+// export const getRegisteredUsers = async (req, res) => {
+//   try {
+//     const users = await getAllUsers();
+//     res.json({ success: true, users });
+//   } catch (error) {
+//     console.error("Get users error:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal server error. Please try again later.",
+//     });
+//   }
+// };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
-
   try {
-    const user = await findUserByEmail(email);
+    const { email, password } = req.body;
+
+    // Validasi input
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
+    }
+
+    const sanitizedEmail = validator.normalizeEmail(email.trim());
+    if (!sanitizedEmail || !validator.isEmail(sanitizedEmail)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid email address",
+      });
+    }
+
+    const user = await findUserByEmail(sanitizedEmail);
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
     }
 
-    res.json({
+    return res.json({
+      success: true,
       message: "Login successful",
       user: {
         id: user.id,
@@ -124,10 +142,11 @@ export const login = async (req, res) => {
         email: user.email,
       },
     });
-  } catch (err) {
-    console.error("Login error:", err);
-    res
-      .status(500)
-      .json({ message: "Server error occurred", error: err.message });
+  } catch (error) {
+    console.error("Login error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error. Please try again later.",
+    });
   }
 };
