@@ -1,8 +1,8 @@
 // db.js (Prisma MySQL connection)
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-const connectDB = async () => {
+export const connectDB = async () => {
   try {
     await prisma.$connect();
     console.log("MySQL (Prisma) connected");
@@ -12,5 +12,4 @@ const connectDB = async () => {
   }
 };
 
-module.exports = connectDB;
-module.exports.prisma = prisma;
+export { prisma };
